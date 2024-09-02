@@ -1,22 +1,22 @@
 # 简介
-- 本项目用于每天自动生成 **树莓派** 的 **ArchLinuxARM** **aarch64** 系统镜像
-- 生成的镜像包含树莓派官方的闭源固件
+- 本项目用于每天自动生成 **高通平台** 的 **ArchLinuxARM** **aarch64** 系统镜像
+- 生成的镜像包含高通平台官方的闭源固件
 
  ## 下载地址
 
-- **ArchLinuxARM-rpi-aarch64-latest.img.zip**：
-  - https://github.com/BurningC4/ArchlinuxARM-rpi-aarch64/releases/latest/download/ArchLinuxARM-rpi-aarch64-latest.img.zip
-- **ArchLinuxARM-rpi-aarch64-latest.img.zip.sha256sum**：
-  - https://github.com/BurningC4/ArchlinuxARM-rpi-aarch64/releases/latest/download/ArchLinuxARM-rpi-aarch64-latest.img.zip.sha256sum
-- **ArchLinuxARM-rpi-aarch64-latest.tar.gz**：
-  - https://github.com/BurningC4/ArchlinuxARM-rpi-aarch64/releases/latest/download/ArchLinuxARM-rpi-aarch64-latest.tar.gz
-- **ArchLinuxARM-rpi-aarch64-latest.tar.gz.sha256sum**：
-  - https://github.com/BurningC4/ArchlinuxARM-rpi-aarch64/releases/latest/download/ArchLinuxARM-rpi-aarch64-latest.tar.gz.sha256sum
+- **ArchLinuxARM-qcom-aarch64-latest.img.zip**：
+  - https://github.com/silime/ArchlinuxARM-qcom-aarch64/releases/latest/download/ArchLinuxARM-qcom-aarch64-latest.img.zip
+- **ArchLinuxARM-qcom-aarch64-latest.img.zip.sha256sum**：
+  - https://github.com/silime/ArchlinuxARM-qcom-aarch64/releases/latest/download/ArchLinuxARM-qcom-aarch64-latest.img.zip.sha256sum
+- **ArchLinuxARM-qcom-aarch64-latest.tar.gz**：
+  - https://github.com/silime/ArchlinuxARM-qcom-aarch64/releases/latest/download/ArchLinuxARM-qcom-aarch64-latest.tar.gz
+- **ArchLinuxARM-qcom-aarch64-latest.tar.gz.sha256sum**：
+  - https://github.com/silime/ArchlinuxARM-qcom-aarch64/releases/latest/download/ArchLinuxARM-qcom-aarch64-latest.tar.gz.sha256sum
 
  ## 安装了以下软件包及其依赖
 
   ```
-  archlinuxarm-keyring base dhcpcd dialog linux-rpi nano net-tools netctl openssh raspberrypi-bootloader firmware-raspberrypi vi which wireless-regdb wireless_tools wpa_supplicant
+  archlinuxarm-keyring base dhcpcd dialog linux-qcom nano net-tools netctl openssh raspberrypi-bootloader firmware-raspberrypi vi which wireless-regdb wireless_tools wpa_supplicant
   ```
   
 
@@ -26,11 +26,11 @@
   sshd systemd-networkd systemd-resolved systemd-timesyncd
   ```
 
-  基本相当于官方 **rpi-aarch64** 镜像安装了 **linux-rpi**
+  基本相当于官方 **qcom-aarch64** 镜像安装了 **linux-qcom**
 
   ### IMG文件的额外订制
   
-  添加并启用了 **resize2fs_once.service**
+  添加并启用了 **resize2fs_once.service** resize SD card
   
   ```
   [Unit]

@@ -1,4 +1,4 @@
-name: Build rpi archlinuxarm
+name: Build qcom archlinuxarm
 
 on:
   workflow_dispatch:
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     env: 
       BUILD_SH: 'sudo arch-chroot ./builder qemu-aarch64-static /usr/bin/bash -c'
-      IMG_NAME: 'ArchLinuxARM-rpi-aarch64-latest'
+      IMG_NAME: 'ArchLinuxARM-qcom-aarch64-latest'
 
     steps:
       - name: checkout repo
@@ -37,6 +37,8 @@ jobs:
           sudo cp /usr/bin/qemu-aarch64-static ./builder/usr/bin/qemu-aarch64-static
           sudo cp -f ./pacman.conf ./builder/etc/pacman.conf
           ${{ env.BUILD_SH }} "pacman -R --ask=4 linux-aarch64"
+          ${{ env.BUILD_SH }} "pacman-key --recv-keys F60FD4C6D426DAB6"
+          ${{ env.BUILD_SH }} "pacman-key --lsign F60FD4C6D426DAB6"
           ${{ env.BUILD_SH }} "pacman -Syyu --ask=4 arch-install-scripts cloud-guest-utils"
         shell: bash
 
