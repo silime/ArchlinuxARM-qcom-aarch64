@@ -16,7 +16,7 @@
  ## 安装了以下软件包及其依赖
 
   ```
-  archlinuxarm-keyring base dhcpcd dialog linux-qcom nano net-tools netctl openssh raspberrypi-bootloader firmware-raspberrypi vi which wireless-regdb wireless_tools wpa_supplicant
+  archlinuxarm-keyring base dhcpcd dialog linux-sm8250 linux-firmware-lenovo-sm8250 linux-firmware-lenovo-sm8250-qcom linux-firmware-lenovo-sm8250-sensors linux-firmware-lenovo-sm8250-whence hexagonrpcd device-lenovo-q706f qbootctl iio-sensor-proxy nano net-tools netctl openssh networkmanager pulseaudio vi which wireless-regdb wireless_tools wpa_supplicant persistent-mac
   ```
   
 

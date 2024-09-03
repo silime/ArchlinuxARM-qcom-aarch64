@@ -47,9 +47,11 @@ jobs:
         run: |
           dd if=/dev/zero of=${{ env.IMG_NAME }}.img bs=4K count=512K
           sudo losetup --partscan ${{ env.V_SD }} ${{ env.IMG_NAME }}.img
-          sudo parted -s ${{ env.V_SD }} mklabel msdos
+          sudo parted -s ${{ env.V_SD }} mklabel gpt
           sudo parted -s ${{ env.V_SD }} mkpart primary fat32 2048s 411647s
+          sudo parted -s ${{ env.V_SD }} name 1 boot
           sudo parted -s ${{ env.V_SD }} mkpart primary ext4 411648s 100%
+          sudo parted -s ${{ env.V_SD }} name 2 rootfs
           sudo mkfs.vfat -F 32 ${{ env.V_SD }}p1
           sudo mkfs.ext4 ${{ env.V_SD }}p2
           sudo tune2fs -O ^has_journal ${{ env.V_SD }}p2
@@ -83,10 +85,12 @@ jobs:
           echo 10
           ${{ env.BUILD_SH }} "usermod -a -G wheel alarm --root /mnt"
           echo 11
-          ${{ env.BUILD_SH }} "echo -n > /mnt/etc/machine-id"
+          ${{ env.BUILD_SH }} "echo 'alarm ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
           echo 12
-          ${{ env.BUILD_SH }} "systemctl --root=/mnt enable $(cat services.md)"
+          ${{ env.BUILD_SH }} "echo -n > /mnt/etc/machine-id"
           echo 13
+          ${{ env.BUILD_SH }} "systemctl --root=/mnt enable $(cat services.md)"
+          echo 14
         shell: bash
 
       - name: clean and create compressed file
