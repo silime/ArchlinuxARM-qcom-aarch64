@@ -1,0 +1,44 @@
+devices:
+  lenovo-q706f:
+    config:
+      - KERNEL_DTB_NAME: 'dtb/qcom/sm8250-lenovo-q706f.dtb'
+      - KERNEL_IMAGE_NAME: 'vmlinuz'
+      - KERNEL_RAMDISK_NAME: 'initramfs-linux.img'
+      - SDCARD_IMAGE: true
+      - FORMAT_MKBOOTING: '--header_version 2 --os_version 11.0.0 --os_patch_level 2024-05 --kernel out/kernel --ramdisk out/ramdisk --dtb out/dtb --pagesize 0x00001000 --base 0x00000000 --kernel_offset 0x00008000 --ramdisk_offset 0x01000000 --second_offset 0x00000000 --tags_offset 0x00000100 --dtb_offset 0x0000000001f00000 --board "" --cmdline "root=PARTLABEL=rootfs rw rootwait audit=0 splash plymouth.ignore-serial-consoles"' 
+      
+    packages:
+      - linux-firmware
+      - archlinuxarm-keyring 
+      - base
+      - dhcpcd
+      - dialog
+      - linux-sm8250
+      - linux-firmware-lenovo-sm8250
+      - linux-firmware-lenovo-sm8250-qcom
+      - linux-firmware-lenovo-sm8250-sensors
+      - linux-firmware-lenovo-sm8250-whence
+      - hexagonrpcd
+      - device-lenovo-q706f
+      - qbootctl
+      - iio-sensor-proxy
+      - nano
+      - net-tools
+      - netctl
+      - openssh
+      - networkmanager
+      - pulseaudio
+      - vi
+      - which
+      - wireless-regdb
+      - wireless_tools
+      - wpa_supplicant
+      - persistent-mac
+      - sudo
+    services:
+      - sshd
+      - NetworkManager
+      - systemd-networkd
+      - systemd-resolved
+      - systemd-timesyncd
+      - iio-sensor-proxy

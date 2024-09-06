@@ -1,1 +1,0 @@
-archlinuxarm-keyring base dhcpcd dialog linux-sm8250 linux-firmware-lenovo-sm8250 linux-firmware-lenovo-sm8250-qcom linux-firmware-lenovo-sm8250-sensors linux-firmware-lenovo-sm8250-whence hexagonrpcd device-lenovo-q706f qbootctl iio-sensor-proxy nano net-tools netctl openssh networkmanager pulseaudio vi which wireless-regdb wireless_tools wpa_supplicant persistent-mac sudo

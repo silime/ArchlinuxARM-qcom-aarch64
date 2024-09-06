@@ -13,6 +13,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        DEVICE: [lenovo-q706f]
     env: 
       BUILD_SH: 'sudo arch-chroot ./builder qemu-aarch64-static /usr/bin/bash -c'
       IMG_NAME: 'ArchLinuxARM-qcom-aarch64-latest'
@@ -23,13 +26,12 @@ jobs:
 
       - name: Set variables
         run: |
-          echo V_SD=$(losetup -f) >> $GITHUB_ENV
           echo RELEASE=$(date +%Y\/%m\/%d) >> $GITHUB_ENV
         shell: bash
 
       - name: generate builder
         run: |
-          sudo apt update && sudo apt install qemu-user-static libarchive-tools arch-install-scripts
+          sudo apt update && sudo apt install qemu-user-static libarchive-tools arch-install-scripts git python3 
           sudo curl -L -o ./ArchLinuxARM-aarch64-latest.tar.gz http://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz
           sudo mkdir ./builder
           sudo bsdtar -xpf ./ArchLinuxARM-aarch64-latest.tar.gz -C ./builder
@@ -37,10 +39,29 @@ jobs:
           sudo cp /usr/bin/qemu-aarch64-static ./builder/usr/bin/qemu-aarch64-static
           sudo cp -f ./pacman.conf ./builder/etc/pacman.conf
           ${{ env.BUILD_SH }} "pacman -R --ask=4 linux-aarch64"
-          ${{ env.BUILD_SH }} "pacman-key --init && pacman-key --populate archlinuxarm && pacman-key --refresh-keys "
+          ${{ env.BUILD_SH }} "pacman-key --init && pacman-key --populate archlinuxarm"
           ${{ env.BUILD_SH }} "pacman-key --recv-keys F60FD4C6D426DAB6"
           ${{ env.BUILD_SH }} "pacman-key --lsign F60FD4C6D426DAB6"
           ${{ env.BUILD_SH }} "pacman -Syyu --ask=4 arch-install-scripts cloud-guest-utils"
+        shell: bash
+
+      - name: Load devices.yaml
+        run: |
+          # Install yq to process YAML files in bash
+          sudo snap install yq
+          # Extract device-specific arrays from devices.yaml based on matrix DEVICE
+          PACKAGES=$(yq '.devices["${{ matrix.DEVICE }}"].packages[]' devices.yaml | tr '\n' ' ')
+          SERVICES=$(yq '.devices["${{ matrix.DEVICE }}"].services[]' devices.yaml | tr '\n' ' ')
+          yq eval '.devices["${{ matrix.DEVICE }}"].config[]' devices.yaml | while IFS=": " read -r key value; do   
+            key=$(echo $key | xargs);   
+            value=$(echo $value | xargs | tr -d "'");   
+            export "$key=$value";   
+            echo "$key=$value" >> $GITHUB_ENV; 
+            echo "$key=$value"
+          done
+          echo "PACKAGES=$PACKAGES" >> $GITHUB_ENV
+          echo "SERVICES=$SERVICES" >> $GITHUB_ENV
+          echo V_SD=$(losetup -f) >> $GITHUB_ENV
         shell: bash
 
       - name: prepare img file
@@ -63,7 +84,7 @@ jobs:
       - name: generate target
         run: |
           echo 0
-          ${{ env.BUILD_SH }} "pacstrap -cGM /mnt $(cat packages.md)"
+          ${{ env.BUILD_SH }} "pacstrap -cGM /mnt ${{ env.PACKAGES }}"
           echo 1
           ${{ env.BUILD_SH }} "rm -f /mnt/etc/resolv.conf"
           echo 2
@@ -89,9 +110,24 @@ jobs:
           echo 12
           ${{ env.BUILD_SH }} "echo -n > /mnt/etc/machine-id"
           echo 13
-          ${{ env.BUILD_SH }} "systemctl --root=/mnt enable $(cat services.md)"
+          ${{ env.BUILD_SH }} "systemctl --root=/mnt enable ${{ env.SERVICES }}"
           echo 14
         shell: bash
+      
+      - name: Make boot image
+        run: |
+          git clone https://android.googlesource.com/platform/system/tools/mkbootimg tools --depth=1
+          mkdir out
+          cp ./builder/mnt/boot/${{ env.KERNEL_IMAGE_NAME }} out/kernel
+          cp ./builder/mnt/boot/${{ env.KERNEL_RAMDISK_NAME }} out/ramdisk
+          cp ./builder/mnt/boot/${{ env.KERNEL_DTB_NAME }} out/dtb
+          tools/mkbootimg.py ${{ env.FORMAT_MKBOOTING }} -o boot.img
+          if [ -f boot.img ]; then
+              echo "MAKE_BOOT_IMAGE_IS_OK=true" >> $GITHUB_ENV
+          else
+              echo "Boot image is empty"
+              exit 1
+          fi
 
       - name: clean and create compressed file
         run: |
@@ -129,6 +165,8 @@ jobs:
         run: |
           sha256sum ${{ env.IMG_NAME }}.tar.gz > ./${{ env.IMG_NAME }}.tar.gz.sha256sum
           sha256sum ${{ env.IMG_NAME }}.img.zip > ./${{ env.IMG_NAME }}.img.zip.sha256sum
+          sha256sum boot.img > ./boot.img.sha256sum
+          ls
         shell: bash
 
       - name: create release
@@ -145,6 +183,8 @@ jobs:
             ./${{ env.IMG_NAME }}.tar.gz.sha256sum
             ./${{ env.IMG_NAME }}.img.zip
             ./${{ env.IMG_NAME }}.img.zip.sha256sum
+            ./boot.img.sha256sum
+            ./boot.img
 
       - name: delete old releases
         uses: dev-drprasad/delete-older-releases@v0.2.0
