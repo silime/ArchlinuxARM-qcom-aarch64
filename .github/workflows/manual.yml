@@ -18,7 +18,6 @@ jobs:
         DEVICE: [lenovo-q706f]
     env: 
       BUILD_SH: 'sudo arch-chroot ./builder qemu-aarch64-static /usr/bin/bash -c'
-      IMG_NAME: 'ArchLinuxARM-qcom-aarch64-latest'
 
     steps:
       - name: checkout repo
@@ -62,6 +61,7 @@ jobs:
           echo "PACKAGES=$PACKAGES" >> $GITHUB_ENV
           echo "SERVICES=$SERVICES" >> $GITHUB_ENV
           echo V_SD=$(losetup -f) >> $GITHUB_ENV
+          echo IMG_NAME="ArchLinuxARM-qcom-${{ matrix.DEVICE }}-latest" >> $GITHUB_ENV
         shell: bash
 
       - name: prepare img file
@@ -114,20 +114,21 @@ jobs:
           echo 14
         shell: bash
       
-      - name: Make boot image
+      - name: Make Android Boot Image
         run: |
           git clone https://android.googlesource.com/platform/system/tools/mkbootimg tools --depth=1
           mkdir out
           cp ./builder/mnt/boot/${{ env.KERNEL_IMAGE_NAME }} out/kernel
           cp ./builder/mnt/boot/${{ env.KERNEL_RAMDISK_NAME }} out/ramdisk
           cp ./builder/mnt/boot/${{ env.KERNEL_DTB_NAME }} out/dtb
-          tools/mkbootimg.py ${{ env.FORMAT_MKBOOTING }} -o boot.img
-          if [ -f boot.img ]; then
+          tools/mkbootimg.py ${{ env.FORMAT_MKBOOTING }} -o ${{ matrix.DEVICE }}-boot.img
+          if [ -f ${{ matrix.DEVICE }}-boot.img ]; then
               echo "MAKE_BOOT_IMAGE_IS_OK=true" >> $GITHUB_ENV
           else
               echo "Boot image is empty"
               exit 1
           fi
+        shell: bash
 
       - name: clean and create compressed file
         run: |
@@ -135,15 +136,17 @@ jobs:
           LANG=C
           LANGUAGE=
           sudo rm -rf ./builder/mnt/etc/*- ./builder/mnt/root/.bash_history ./builder/mnt/root/.gnupg ./builder/mnt/var/log/* ./builder/mnt/var/lib/systemd/*
-          ${{ env.BUILD_SH }} "bsdtar --exclude 'lost+found' --exclude 'boot/System Volume Information' -czf /${{ env.IMG_NAME }}.tar.gz -C /mnt/ ."
-          sudo mv ./builder/${{ env.IMG_NAME }}.tar.gz ./${{ env.IMG_NAME }}.tar.gz
+          ${{ env.BUILD_SH }} "bsdtar --exclude 'lost+found' --exclude 'boot/System Volume Information' -czf /${{ env.IMG_NAME }}-rootfs.tar.gz -C /mnt/ ."
+          sudo mv ./builder/${{ env.IMG_NAME }}-rootfs.tar.gz ./${{ env.IMG_NAME }}-rootfs.tar.gz
         shell: bash
 
       - name: create and enable resize2fs_once service
         run: |
           ${{ env.BUILD_SH }} "cp -f /usr/bin/growpart /mnt/usr/local/bin/growpart"
-          ${{ env.BUILD_SH }} "curl -L -o /mnt/etc/systemd/system/resize2fs_once.service https://github.com/BurningC4/ArchlinuxARM-rpi-aarch64/raw/main/resize2fs_once.service"
+          ${{ env.BUILD_SH }} "curl -L -o /mnt/etc/systemd/system/resize2fs_once.service https://github.com/silime/ArchlinuxARM-qcom-aarch64/raw/main/resize2fs_once.service"
+          ${{ env.BUILD_SH }} "curl -L -o /mnt/usr/local/bin/resize2fs_once.sh https://github.com/silime/ArchlinuxARM-qcom-aarch64/raw/main/resize2fs_once.sh"
           ${{ env.BUILD_SH }} "chmod a+x /mnt/usr/local/bin/growpart"
+          ${{ env.BUILD_SH }} "chmod a+x /mnt/usr/local/bin/resize2fs_once.sh"
           ${{ env.BUILD_SH }} "systemctl --root=/mnt enable resize2fs_once.service"
         shell: bash
 
@@ -163,9 +166,9 @@ jobs:
 
       - name: prepare release files
         run: |
-          sha256sum ${{ env.IMG_NAME }}.tar.gz > ./${{ env.IMG_NAME }}.tar.gz.sha256sum
+          sha256sum ${{ env.IMG_NAME }}-rootfs.tar.gz > ./${{ env.IMG_NAME }}-rootfs.tar.gz.sha256sum
           sha256sum ${{ env.IMG_NAME }}.img.zip > ./${{ env.IMG_NAME }}.img.zip.sha256sum
-          sha256sum boot.img > ./boot.img.sha256sum
+          sha256sum ${{ matrix.DEVICE }}-boot.img > ./${{ matrix.DEVICE }}-boot.img.sha256sum
           ls
         shell: bash
 
@@ -179,12 +182,12 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            ./${{ env.IMG_NAME }}.tar.gz
-            ./${{ env.IMG_NAME }}.tar.gz.sha256sum
+            ./${{ env.IMG_NAME }}-rootfs.tar.gz
+            ./${{ env.IMG_NAME }}-rootfs.tar.gz.sha256sum
             ./${{ env.IMG_NAME }}.img.zip
             ./${{ env.IMG_NAME }}.img.zip.sha256sum
-            ./boot.img.sha256sum
-            ./boot.img
+            ./${{ matrix.DEVICE }}-boot.img.sha256sum
+            ./${{ matrix.DEVICE }}-boot.img
 
       - name: delete old releases
         uses: dev-drprasad/delete-older-releases@v0.2.0
