@@ -122,6 +122,7 @@ jobs:
           cp ./builder/mnt/boot/${{ env.KERNEL_RAMDISK_NAME }} out/ramdisk
           cp ./builder/mnt/boot/${{ env.KERNEL_DTB_NAME }} out/dtb
           tools/mkbootimg.py ${{ env.FORMAT_MKBOOTING }} -o ${{ matrix.DEVICE }}-boot.img
+          tools/mkbootimg.py ${{ env.ROOTFS_FORMAT_MKBOOTING }} -o ${{ matrix.DEVICE }}-rootfs-boot.img
           if [ -f ${{ matrix.DEVICE }}-boot.img ]; then
               echo "MAKE_BOOT_IMAGE_IS_OK=true" >> $GITHUB_ENV
           else
@@ -169,7 +170,7 @@ jobs:
           sha256sum ${{ env.IMG_NAME }}-rootfs.tar.gz > ./${{ env.IMG_NAME }}-rootfs.tar.gz.sha256sum
           sha256sum ${{ env.IMG_NAME }}.img.zip > ./${{ env.IMG_NAME }}.img.zip.sha256sum
           sha256sum ${{ matrix.DEVICE }}-boot.img > ./${{ matrix.DEVICE }}-boot.img.sha256sum
-          ls
+          sha256sum ${{ matrix.DEVICE }}-rootfs-boot.img > ./${{ matrix.DEVICE }}-rootfs-boot.img.sha256sum
         shell: bash
 
       - name: create release
@@ -188,6 +189,8 @@ jobs:
             ./${{ env.IMG_NAME }}.img.zip.sha256sum
             ./${{ matrix.DEVICE }}-boot.img.sha256sum
             ./${{ matrix.DEVICE }}-boot.img
+            ./${{ matrix.DEVICE }}-rootfs-boot.img.sha256sum
+            ./${{ matrix.DEVICE }}-rootfs-boot.img
 
       - name: delete old releases
         uses: dev-drprasad/delete-older-releases@v0.2.0
