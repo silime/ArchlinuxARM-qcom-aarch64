@@ -22,7 +22,7 @@ devices:
       - hexagonrpcd
       - device-lenovo-q706f
       - qbootctl
-      - iio-sensor-proxy
+      - iio-sensor-proxy=3.5-99
       - nano
       - net-tools
       - netctl
