@@ -182,7 +182,7 @@ jobs:
           body: ${{ env.RELEASE }}
           tag_name: ${{ env.RELEASE }}
           draft: false
-          prerelease: false
+          prerelease: true
           files: |
             ./${{ env.IMG_NAME }}-rootfs.tar.gz
             ./${{ env.IMG_NAME }}-rootfs.tar.gz.sha256sum
