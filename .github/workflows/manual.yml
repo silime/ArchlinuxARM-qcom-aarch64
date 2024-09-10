@@ -38,7 +38,7 @@ jobs:
           sudo cp /usr/bin/qemu-aarch64-static ./builder/usr/bin/qemu-aarch64-static
           sudo cp -f ./pacman.conf ./builder/etc/pacman.conf
           ${{ env.BUILD_SH }} "pacman -R --ask=4 linux-aarch64"
-          ${{ env.BUILD_SH }} "pacman-key --init && pacman-key --populate archlinuxarm"
+          ${{ env.BUILD_SH }} "pacman-key --init && pacman-key --populate"
           ${{ env.BUILD_SH }} "pacman-key --recv-keys F60FD4C6D426DAB6"
           ${{ env.BUILD_SH }} "pacman-key --lsign F60FD4C6D426DAB6"
           ${{ env.BUILD_SH }} "pacman -Syyu --ask=4 arch-install-scripts cloud-guest-utils"
@@ -98,8 +98,9 @@ jobs:
           echo 6
           ${{ env.BUILD_SH }} "echo 'alarm'>/mnt/etc/hostname"
           echo 7
-          ${{ env.BUILD_SH }} "echo 'LANG=C'>/mnt/etc/locale.conf"
-          ${{ env.BUILD_SH }} "echo -e '[qcom]\nServer = https://github.com/silime/ArchLinux-Packages/releases/latest/download/'>>/mnt/etc/pacman.conf"
+          ${{ env.BUILD_SH }} "echo 'LANG=en_US.UTF-8'>/mnt/etc/locale.conf"
+          ${{ env.BUILD_SH }} "echo 'en_US.UTF-8 UTF-8'>>/mnt/etc/locale.gen"
+          ${{ env.BUILD_SH }} "locale-gen --root /mnt"
           echo 8
           ${{ env.BUILD_SH }} "useradd -d /home/alarm -m -U alarm --root /mnt"
           echo 9
@@ -113,6 +114,7 @@ jobs:
           echo 13
           ${{ env.BUILD_SH }} "systemctl --root=/mnt enable ${{ env.SERVICES }}"
           echo 14
+          ${{ env.BUILD_SH }} "curl -L -o /mnt/usr/local/bin/init_key.sh https://github.com/silime/ArchlinuxARM-qcom-aarch64/raw/main/init_key.sh"
         shell: bash
       
       - name: Make Android Boot Image

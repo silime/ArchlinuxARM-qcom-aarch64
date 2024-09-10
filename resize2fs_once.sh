@@ -45,7 +45,4 @@ sudo /usr/local/bin/growpart $(dirname $ROOT_PART_FILE) $(basename $ROOT_PART_FI
 echo "Resizing filesystem"
 sudo /sbin/resize2fs $ROOT_PART_FILE || exit 1
 
-echo "Init Key"
-pacman-key --init && pacman-key --populate archlinuxarm
-
 echo "Resize operation completed"
