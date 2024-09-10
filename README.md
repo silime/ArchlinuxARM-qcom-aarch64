@@ -16,6 +16,11 @@
   - https://github.com/silime/ArchlinuxARM-qcom-aarch64/releases/latest/download/lenovo-q706f-boot.img
 - **lenovo-q706f-boot.img.sha256sum**
   - https://github.com/silime/ArchlinuxARM-qcom-aarch64/releases/latest/download/lenovo-q706f-boot.img.sha256sum
+- **lenovo-q706f-rootfs-boot.img**
+  - https://github.com/silime/ArchlinuxARM-qcom-aarch64/releases/latest/download/lenovo-q706f-rootfs-boot.img
+- **lenovo-q706f-rootfs-boot.img.sha256sum**
+  - https://github.com/silime/ArchlinuxARM-qcom-aarch64/releases/latest/download/lenovo-q706f-rootfs-boot.img.sha256sum
+
 
  ## 安装了以下软件包及其依赖
 
@@ -115,7 +120,5 @@
 | DisplayPort      | Works   |
 | Type-C           | Works   |
 | Accelerometer    | Works   |
-| :------------    | -----   |
-| Magnetometer     | Works   |
 | Ambient Light    | Works   |
 | Proximity        | Works   |
