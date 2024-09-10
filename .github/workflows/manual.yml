@@ -106,7 +106,7 @@ jobs:
           echo 10
           ${{ env.BUILD_SH }} "usermod -a -G wheel alarm --root /mnt"
           echo 11
-          ${{ env.BUILD_SH }} "echo 'alarm ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
+          ${{ env.BUILD_SH }} "echo 'alarm ALL=(ALL) NOPASSWD: ALL' >> /mnt/etc/sudoers"
           echo 12
           ${{ env.BUILD_SH }} "echo -n > /mnt/etc/machine-id"
           echo 13

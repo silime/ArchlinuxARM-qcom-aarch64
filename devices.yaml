@@ -36,6 +36,7 @@ devices:
       - wpa_supplicant
       - persistent-mac
       - sudo
+      - bash-completion
     services:
       - sshd
       - NetworkManager

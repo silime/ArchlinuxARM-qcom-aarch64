@@ -114,10 +114,8 @@
 | Charging         | Partial |
 | DisplayPort      | Works   |
 | Type-C           | Works   |
-
-
-| Accelerometer | Works |
-| :------------ | ----- |
-| Magnetometer  | Works |
-| Ambient Light | Works |
-| Proximity     | Works |
+| Accelerometer    | Works   |
+| :------------    | -----   |
+| Magnetometer     | Works   |
+| Ambient Light    | Works   |
+| Proximity        | Works   |
