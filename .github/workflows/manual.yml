@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set variables
         run: |
@@ -99,6 +99,7 @@ jobs:
           ${{ env.BUILD_SH }} "echo 'alarm'>/mnt/etc/hostname"
           echo 7
           ${{ env.BUILD_SH }} "echo 'LANG=C'>/mnt/etc/locale.conf"
+          ${{ env.BUILD_SH }} "echo -e '[qcom]\nServer = https://github.com/silime/ArchLinux-Packages/releases/latest/download/'>>/mnt/etc/pacman.conf"
           echo 8
           ${{ env.BUILD_SH }} "useradd -d /home/alarm -m -U alarm --root /mnt"
           echo 9
@@ -174,7 +175,7 @@ jobs:
         shell: bash
 
       - name: create release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -193,7 +194,7 @@ jobs:
             ./${{ matrix.DEVICE }}-rootfs-boot.img
 
       - name: delete old releases
-        uses: dev-drprasad/delete-older-releases@v0.2.0
+        uses: dev-drprasad/delete-older-releases@v0.3.4
         with:
           keep_latest: 1
           delete_tags: true
