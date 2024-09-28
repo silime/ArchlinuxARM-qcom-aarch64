@@ -98,9 +98,7 @@ jobs:
           echo 6
           ${{ env.BUILD_SH }} "echo 'alarm'>/mnt/etc/hostname"
           echo 7
-          ${{ env.BUILD_SH }} "echo 'LANG=en_US.UTF-8'>/mnt/etc/locale.conf"
-          ${{ env.BUILD_SH }} "echo 'en_US.UTF-8 UTF-8'>>/mnt/etc/locale.gen"
-          ${{ env.BUILD_SH }} "locale-gen --root /mnt"
+          ${{ env.BUILD_SH }} "echo 'LANG=C'>/mnt/etc/locale.conf"
           echo 8
           ${{ env.BUILD_SH }} "useradd -d /home/alarm -m -U alarm --root /mnt"
           echo 9
@@ -114,7 +112,7 @@ jobs:
           echo 13
           ${{ env.BUILD_SH }} "systemctl --root=/mnt enable ${{ env.SERVICES }}"
           echo 14
-          ${{ env.BUILD_SH }} "curl -L -o /mnt/usr/local/bin/init_key.sh https://github.com/silime/ArchlinuxARM-qcom-aarch64/raw/main/init_key.sh"
+          ${{ env.BUILD_SH }} "curl -L -o /mnt/usr/bin/init_key.sh https://github.com/silime/ArchlinuxARM-qcom-aarch64/raw/main/init_key.sh && chmod a+x /mnt/usr/bin/init_key.sh"
         shell: bash
       
       - name: Make Android Boot Image
@@ -198,7 +196,7 @@ jobs:
       - name: delete old releases
         uses: dev-drprasad/delete-older-releases@v0.3.4
         with:
-          keep_latest: 1
+          keep_latest: 10
           delete_tags: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
