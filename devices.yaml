@@ -44,3 +44,63 @@ devices:
       - systemd-resolved
       - systemd-timesyncd
       - iio-sensor-proxy
+  oneplus-fajita:
+    config:
+      - KERNEL_DTB_NAME: 'dtbs/qcom/sdm845-oneplus-fajita.dtb'
+      - KERNEL_IMAGE_NAME: 'vmlinuz-linux-sdm845'
+      - KERNEL_RAMDISK_NAME: 'initramfs-linux-sdm845.img'
+      - SDCARD_IMAGE: true
+      - FORMAT_MKBOOTING: '--header_version 2 --os_version 11.0.0 --os_patch_level 2024-05 --kernel out/kernel --ramdisk out/ramdisk --dtb out/dtb --pagesize 0x00001000 --base 0x00000000 --kernel_offset 0x00008000 --ramdisk_offset 0x01000000 --second_offset 0x00000000 --tags_offset 0x00000100 --dtb_offset 0x0000000001f00000 --board "" --cmdline "root=PARTLABEL=rootfs rw rootwait audit=0 splash plymouth.ignore-serial-consoles slot_suffix=_b"' 
+      - ROOTFS_FORMAT_MKBOOTING: '--header_version 2 --os_version 11.0.0 --os_patch_level 2024-05 --kernel out/kernel --ramdisk out/ramdisk --dtb out/dtb --pagesize 0x00001000 --base 0x00000000 --kernel_offset 0x00008000 --ramdisk_offset 0x01000000 --second_offset 0x00000000 --tags_offset 0x00000100 --dtb_offset 0x0000000001f00000 --board "" --cmdline "root=PARTLABEL=userdata rw rootwait audit=0 splash plymouth.ignore-serial-consoles slot_suffix=_b"' 
+    packages:
+      - archlinuxarm-keyring 
+      - base
+      - dhcpcd
+      - dialog
+      - linux-sdm845
+      - linux-firmware-oneplus-sdm845
+      - linux-firmware-oneplus-sdm845-qcom
+      - linux-firmware-oneplus-sdm845-sensors
+      - linux-firmware-oneplus-sdm845-whence
+      - hexagonrpcd
+      - soc-qcom-sdm845
+      - alsa-ucm-oneplus
+      - q6voiced
+      - device-oneplus-fajita
+      - qbootctl
+      - iio-sensor-proxy=3.6-1
+      - nano
+      - net-tools
+      - netctl
+      - openssh
+      - networkmanager
+      - pulseaudio
+      - vim
+      - which
+      - wireless-regdb
+      - wireless_tools
+      - wpa_supplicant
+      - bootmac
+      - sudo
+      - bash-completion
+      - gdm
+      - gnome-shell
+      - gnome-keyring
+      - gnome-control-center
+      - gnome-console
+      - gnome-disk-utility
+      - gnome-tweaks
+      - gnome-backgrounds
+      - nautilus
+      - xdg-desktop-portal
+      - xdg-desktop-portal-gnome
+      - xdg-user-dirs
+      - librsvg
+    services:
+      - sshd
+      - NetworkManager
+      - systemd-networkd
+      - systemd-resolved
+      - systemd-timesyncd
+      - iio-sensor-proxy
+      - gdm
