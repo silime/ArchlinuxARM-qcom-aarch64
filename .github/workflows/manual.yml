@@ -41,7 +41,7 @@ jobs:
           ${{ env.BUILD_SH }} "pacman-key --init && pacman-key --populate"
           ${{ env.BUILD_SH }} "pacman-key --recv-keys F60FD4C6D426DAB6"
           ${{ env.BUILD_SH }} "pacman-key --lsign F60FD4C6D426DAB6"
-          ${{ env.BUILD_SH }} "pacman -Syyu --ask=4 arch-install-scripts cloud-guest-utils"
+          ${{ env.BUILD_SH }} "pacman -Syyu --ask=4 arch-install-scripts cloud-guest-utils --disable-download-timeout"
         shell: bash
 
       - name: Load devices.yaml
