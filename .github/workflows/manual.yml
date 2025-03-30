@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        DEVICE: [lenovo-q706f]
+        DEVICE: [lenovo-q706f, oneplus-fajita]
     env: 
       BUILD_SH: 'sudo arch-chroot ./builder qemu-aarch64-static /usr/bin/bash -c'
 
