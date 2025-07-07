@@ -9,7 +9,6 @@ devices:
       - ROOTFS_FORMAT_MKBOOTING: '--header_version 2 --os_version 11.0.0 --os_patch_level 2024-05 --kernel out/kernel --ramdisk out/ramdisk --dtb out/dtb --pagesize 0x00001000 --base 0x00000000 --kernel_offset 0x00008000 --ramdisk_offset 0x01000000 --second_offset 0x00000000 --tags_offset 0x00000100 --dtb_offset 0x0000000001f00000 --board "" --cmdline "root=PARTLABEL=userdata rw rootwait audit=0 splash plymouth.ignore-serial-consoles slot_suffix=_b"' 
 
     packages:
-      - linux-firmware
       - archlinuxarm-keyring 
       - base
       - dhcpcd
